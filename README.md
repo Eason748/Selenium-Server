@@ -2,247 +2,221 @@
 
 A Model Context Protocol (MCP) server that provides Selenium-based browser automation capabilities. This server enables automated browser testing and web scraping functionality through a standardized MCP interface.
 
+```bash
+npx @thinkai/selenium-mcp-server
+```
+
 ## Features
 
-- Browser automation with Selenium WebDriver
-- Support for Chrome, Firefox, and Edge browsers
-- Session management and browser pooling
-- Comprehensive error handling and logging
-- Screenshot capture capabilities
-- JavaScript execution support
+- 🌐 Browser automation with Selenium WebDriver
+- 🔄 Support for Chrome, Firefox, and Edge browsers
+- 📦 Session management and browser pooling
+- 📝 Comprehensive error handling and logging
+- 📸 Screenshot capture capabilities
+- 🔧 JavaScript execution support
+- 🐳 Docker support for containerized execution
 
-## Tools
+## Available Tools
 
-### navigate
-Navigate to a URL in a browser session.
-```typescript
-{
-  url: string;          // URL to navigate to
-  browserType?: string; // 'chrome' | 'firefox' | 'edge'
-}
+This MCP server provides several tools for browser automation through natural language interaction:
+
+### Browser Navigation
+- **navigate**: Open a webpage in a browser (Chrome, Firefox, or Edge)
+  - Example: "Open example.com in Chrome"
+
+### Page Interaction
+- **click**: Click on elements in the page
+  - Example: "Click the login button"
+  - Example: "Click the element with id 'submit'"
+
+- **type**: Enter text into form fields
+  - Example: "Type 'hello' into the search box"
+  - Example: "Fill the username field with 'admin'"
+
+- **wait**: Wait for elements to appear
+  - Example: "Wait for the loading spinner to disappear"
+  - Example: "Wait for the search results to load"
+
+### Page Analysis
+- **get_content**: Retrieve page information
+  - Example: "Get the page title"
+  - Example: "Get the current URL"
+  - Example: "Get the page source"
+
+### Visual Verification
+- **screenshot**: Capture the current page state
+  - Example: "Take a screenshot of the page"
+
+### Advanced Features
+- **execute_script**: Run JavaScript code (for advanced automation)
+  - Note: This is typically handled automatically by the AI assistant based on the task requirements
+
+The AI assistant automatically manages browser sessions and technical details, allowing users to focus on describing their automation goals in natural language.
+
+## Usage Example
+
+```
+User: "Can you test the login form on example.com?"
+
+AI: I'll help you test the login form:
+1. Navigate to the website
+2. Fill in the form
+3. Submit and verify
+
+[AI automatically handles browser automation through natural language]
 ```
 
-### click
-Click on an element in the page.
-```typescript
-{
-  selector: {
-    type: string;   // 'css' | 'xpath' | 'id' | 'name' | 'class'
-    value: string;  // Selector value
-  };
-  options?: {
-    waitForElement?: boolean; // Wait for element to be present
-    timeout?: number;         // Timeout in milliseconds
-  };
-  sessionId: string;
-}
-```
+## Toolset
 
-### type
-Type text into an element.
-```typescript
-{
-  selector: {
-    type: string;   // 'css' | 'xpath' | 'id' | 'name' | 'class'
-    value: string;  // Selector value
-  };
-  text: string;     // Text to type
-  options?: {
-    clearFirst?: boolean;  // Clear field before typing
-    submitAfter?: boolean; // Submit form after typing
-  };
-  sessionId: string;
-}
-```
+| Tool | Description | Inputs |
+| --- | --- | --- |
+| navigate | Open a webpage in a browser | url*<br>string<br>URL to navigate to<br>browserType<br>string<br>'chrome' \| 'firefox' \| 'edge'<br>sessionId<br>string<br>Browser session ID |
+| click | Click on an element in the page | selector*<br>object<br>Element selector {type, value}<br>options<br>object<br>{waitForElement, timeout}<br>sessionId*<br>string<br>Browser session ID |
+| type | Enter text into form fields | selector*<br>object<br>Element selector {type, value}<br>text*<br>string<br>Text to type<br>options<br>object<br>{clearFirst, submitAfter}<br>sessionId*<br>string<br>Browser session ID |
+| wait | Wait for elements to appear | selector*<br>object<br>Element selector {type, value}<br>options<br>object<br>{timeout, pollInterval}<br>sessionId*<br>string<br>Browser session ID |
+| screenshot | Capture the current page state | sessionId*<br>string<br>Browser session ID |
+| get_content | Get page information | type*<br>string<br>'url' \| 'title' \| 'source'<br>sessionId*<br>string<br>Browser session ID |
+| execute_script | Run JavaScript code | script*<br>string<br>JavaScript code to execute<br>args<br>array<br>Arguments to pass<br>sessionId*<br>string<br>Browser session ID |
 
-### wait
-Wait for an element to be visible.
-```typescript
-{
-  selector: {
-    type: string;   // 'css' | 'xpath' | 'id' | 'name' | 'class'
-    value: string;  // Selector value
-  };
-  options?: {
-    timeout?: number;      // Timeout in milliseconds
-    pollInterval?: number; // Poll interval in milliseconds
-  };
-  sessionId: string;
-}
-```
+## Installation
 
-### execute_script
-Execute JavaScript in the browser context.
-```typescript
-{
-  script: string;   // JavaScript code to execute
-  args?: any[];     // Arguments to pass to the script
-  sessionId: string;
-}
-```
+### Using NPX
 
-### screenshot
-Take a screenshot of the current page.
-```typescript
-{
-  sessionId: string;
-}
-```
-
-### get_content
-Get page content (URL, title, or source).
-```typescript
-{
-  type: string;     // 'url' | 'title' | 'source'
-  sessionId: string;
-}
-```
-
-## 快速开始
-
-### 通过 npx 使用
-
-无需安装，直接通过 npx 运行：
+Run directly without installation:
 
 ```bash
 npx @thinkai/selenium-mcp-server
 ```
 
-### MCP 客户端配置
+### Using Docker
 
-#### Claude Desktop
-
-在 Claude Desktop 配置文件中添加以下配置（通常位于 `~/Library/Application Support/Claude/claude_desktop_config.json`）：
-
-```json
-{
-  "mcpServers": {
-    "selenium": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@thinkai/selenium-mcp-server"
-      ],
-      "disabled": false,
-      "autoApprove": [
-        "navigate",
-        "click",
-        "type",
-        "wait",
-        "screenshot",
-        "get_content"
-      ]
-    }
-  }
-}
-```
-
-#### Cline
-
-在 Cline 配置文件中添加以下配置（通常位于 `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`）：
-
-```json
-{
-  "mcpServers": {
-    "selenium": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@thinkai/selenium-mcp-server"
-      ],
-      "disabled": false,
-      "autoApprove": [
-        "navigate",
-        "click",
-        "type",
-        "wait",
-        "screenshot",
-        "get_content"
-      ]
-    }
-  }
-}
-```
-
-### 本地开发
-
-1. 安装依赖:
+1. Build the image:
 ```bash
-pnpm install
+docker build -t selenium-mcp-server .
 ```
 
-2. 构建项目:
+2. Run the container:
 ```bash
-pnpm build
+docker run -d \
+  --name selenium-mcp \
+  -p 3000:3000 \
+  selenium-mcp-server
 ```
+
+3. With custom configuration (optional):
+```bash
+docker run -d \
+  --name selenium-mcp \
+  -p 3000:3000 \
+  -e PORT=3000 \
+  -e LOG_LEVEL=info \
+  -e MAX_SESSIONS=5 \
+  selenium-mcp-server
+```
+
+Or use our pre-built image:
+```bash
+docker run -d \
+  --name selenium-mcp \
+  -p 3000:3000 \
+  thinkai/selenium-mcp-server
+```
+
+The Docker image includes:
+- Node.js 18 LTS
+- Chrome and Firefox browsers
+- All necessary browser dependencies
+- Pre-configured environment
+
+## Parameters
+
+### Docker Configuration
+
+| Parameter | Description |
+| --- | --- |
+| PORT | Server port (default: 3000) |
+| LOG_LEVEL | Winston log level |
+| MAX_SESSIONS | Max concurrent browser sessions |
+| TIMEOUT | Default operation timeout (ms) |
+| RETRIES | Operation retry count |
+
+### NPX Configuration
+
+| Parameter | Description |
+| --- | --- |
+| PORT | Server port (default: 3000) |
+| LOG_LEVEL | Winston log level |
+| MAX_SESSIONS | Max concurrent browser sessions |
+| TIMEOUT | Default operation timeout (ms) |
+| RETRIES | Operation retry count |
 
 ## Configuration
 
-The server can be configured through environment variables or a configuration file:
+> Claude Desktop ｜ Vscode Cline
 
-```typescript
-interface Config {
-  port?: number;                 // Server port (default: 3000)
-  logLevel?: string;            // Winston log level
-  maxSessions?: number;         // Max concurrent browser sessions
-  timeout?: number;             // Default operation timeout (ms)
-  retries?: number;             // Operation retry count
-  browsers?: {                  // Browser-specific configs
-    chrome?: BrowserConfig;
-    firefox?: BrowserConfig;
-    edge?: BrowserConfig;
-  };
-}
+Add this to your `config.json`:
 
-interface BrowserConfig {
-  binary?: string;              // Browser binary path
-  args?: string[];             // Browser launch arguments
-  defaultCapabilities?: object; // Default capabilities
+```json
+{
+  "mcpServers": {
+    "github.com/thinkai/selenium-mcp-server": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "PORT=3000",
+        "-e",
+        "MAX_SESSIONS=5",
+        "thinkai/selenium-mcp-server"
+      ]
+    }
+  }
 }
 ```
 
-## Usage
+### NPX Configuration
 
-1. Start the server:
+```json
+{
+  "mcpServers": {
+    "github.com/thinkai/selenium-mcp-server": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@thinkai/selenium-mcp-server"
+      ]
+    }
+  }
+}
+```
+
+## Build
+
+Docker build:
+
 ```bash
-pnpm start
-```
-
-2. Use with an MCP client:
-```typescript
-const result = await client.useTool('navigate', {
-  url: 'https://example.com',
-  browserType: 'chrome'
-});
-
-const sessionId = JSON.parse(result.content[0].text).sessionId;
-
-await client.useTool('click', {
-  selector: {
-    type: 'css',
-    value: '#submit-button'
-  },
-  sessionId
-});
+docker build -t thinkai/selenium-mcp-server:latest .
 ```
 
 ## Development
 
-1. Run in development mode:
+1. Install dependencies:
+```bash
+pnpm install
+```
+
+2. Run in development mode:
 ```bash
 pnpm dev
 ```
 
-2. Run tests:
+3. Run tests:
 ```bash
 pnpm test
 ```
 
-3. Lint code:
-```bash
-pnpm lint
-```
-
 ## License
 
-MIT
+This MCP server is licensed under the MIT License. This means you are free to use, modify, and distribute the software, subject to the terms and conditions of the MIT License. For more details, please see the LICENSE file in the project repository.
